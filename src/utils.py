@@ -6,11 +6,10 @@
 import box
 import yaml
 
-from langchain import PromptTemplate
 from langchain.chains import RetrievalQA
 from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.vectorstores import FAISS
-from src.prompts import qa_template
+from src.prompts import qa_template, basic_template
 from src.llm import build_llm
 
 # Import config vars
@@ -36,13 +35,24 @@ def build_retrieval_qa(llm, prompt, vectordb):
                                        )
     return dbqa
 
-
 def setup_dbqa():
+
+    # the embedding model will be downloaded once and saved in .cache folder
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2",
                                        model_kwargs={'device': 'cpu'})
+
     vectordb = FAISS.load_local(cfg.DB_FAISS_PATH, embeddings)
     llm = build_llm()
     qa_prompt = set_qa_prompt()
     dbqa = build_retrieval_qa(llm, qa_prompt, vectordb)
 
     return dbqa
+
+def setup_dbqa_basic():
+
+    llm = build_llm()
+    sim_chain = PromptResponse.from_transformer(llm)
+    # basic_prompt = PromptTemplate(template=basic_template, input_variables=['question'])
+
+
+    return sim_chain

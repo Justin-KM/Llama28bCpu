@@ -16,3 +16,11 @@ Question: {question}
 Only return the helpful answer below and nothing else.
 Helpful answer:
 """
+
+basic_template = """Please answer following question:
+
+Question: {question}
+
+Only return the helpful answer below and nothing else.
+Helpful answer:
+"""
